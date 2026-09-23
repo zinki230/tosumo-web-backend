@@ -44,13 +44,17 @@ function generateTokens(userId: string, role: string, institutionId?: string) {
     ...(institutionId && { institutionId })
   }
 
-  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
-    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as string || '15m'
-  })
+  const accessToken = jwt.sign(
+    payload, 
+    process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET || 'default-secret-change-me',
+    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
+  )
 
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as string || '7d'
-  })
+  const refreshToken = jwt.sign(
+    payload, 
+    process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'default-refresh-secret-change-me',
+    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+  )
 
   return { accessToken, refreshToken }
 }
@@ -300,7 +304,10 @@ router.post('/refresh', async (req, res, next) => {
       })
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any
+    const decoded = jwt.verify(
+      refreshToken, 
+      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'default-refresh-secret-change-me'
+    ) as any
     const user = await User.findById(decoded.userId)
 
     if (!user || !user.isActive) {

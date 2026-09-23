@@ -30,7 +30,10 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as JWTPayload
+    const decoded = jwt.verify(
+      token, 
+      process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET || 'default-secret-change-me'
+    ) as JWTPayload
 
     // Check if user still exists and is active
     const user = await User.findById(decoded.userId).select('isActive role')
