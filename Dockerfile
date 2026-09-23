@@ -11,8 +11,8 @@ RUN apk add --no-cache git
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
 
 # Copy source code
 COPY src ./src
@@ -20,8 +20,8 @@ COPY src ./src
 # Build the application
 RUN npm run build
 
-# Remove development dependencies and source code
-RUN npm prune --production && rm -rf src tsconfig.json
+# Remove development dependencies and source code after build
+RUN npm prune --production && rm -rf src tsconfig.json node_modules/@types node_modules/typescript node_modules/tsx
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
