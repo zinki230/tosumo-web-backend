@@ -140,7 +140,7 @@ router.post('/doctors', authMiddleware, async (req: AuthenticatedRequest, res: R
     // For web app, we'll create a simple doctor record
     // Password will be generated and sent via SMS/email in real implementation
     const tempPassword = 'TempDoc@123'
-    const bcrypt = await import('bcrypt')
+    const bcrypt = await import('bcryptjs')
     const passwordHash = await bcrypt.hash(tempPassword, 12)
 
     const doctor = new User({
