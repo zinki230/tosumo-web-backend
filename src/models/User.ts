@@ -114,7 +114,7 @@ const UserSchema = new Schema<IUser>({
   }]
 }, {
   timestamps: true,
-  collection: 'users'
+  collection: 'User'  // Match Prisma collection name (capital U)
 })
 
 // Indexes for better performance

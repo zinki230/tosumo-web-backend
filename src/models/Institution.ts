@@ -97,7 +97,7 @@ const InstitutionSchema = new Schema<IInstitution>({
   }
 }, {
   timestamps: true,
-  collection: 'institutions'
+  collection: 'Institution'  // Match Prisma collection name (capital I)
 })
 
 // Indexes
