@@ -44,17 +44,13 @@ function generateTokens(userId: string, role: string, institutionId?: string) {
     ...(institutionId && { institutionId })
   }
 
-  const accessToken = jwt.sign(
-    payload, 
-    process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET || 'default-secret-change-me',
-    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
-  )
+  const accessSecret = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET || 'default-secret-change-me'
+  const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'default-refresh-secret-change-me'
+  const accessExpiry = (process.env.JWT_ACCESS_EXPIRES_IN || '15m') as string
+  const refreshExpiry = (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as string
 
-  const refreshToken = jwt.sign(
-    payload, 
-    process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'default-refresh-secret-change-me',
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
-  )
+  const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessExpiry as any })
+  const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshExpiry as any })
 
   return { accessToken, refreshToken }
 }
